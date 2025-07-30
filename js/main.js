@@ -69,25 +69,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const canvas = document.getElementById('gameCanvas');
         const container = canvas.parentElement;
         
-        // Keep original aspect ratio
-        const aspectRatio = 800 / 480;
-        const containerWidth = container.clientWidth;
-        const containerHeight = container.clientHeight;
+        // Let CSS handle the responsive sizing
+        // Just ensure the canvas has the correct internal resolution
+        canvas.width = 800;
+        canvas.height = 480;
         
-        let newWidth = containerWidth;
-        let newHeight = newWidth / aspectRatio;
-        
-        if (newHeight > containerHeight) {
-            newHeight = containerHeight;
-            newWidth = newHeight * aspectRatio;
-        }
-        
-        // Ensure integer scaling for pixel-perfect rendering
-        const scale = Math.floor(Math.min(newWidth / 800, newHeight / 480));
-        if (scale >= 1) {
-            canvas.style.width = (800 * scale) + 'px';
-            canvas.style.height = (480 * scale) + 'px';
-        }
+        // Enable pixel-perfect rendering
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = false;
+        ctx.webkitImageSmoothingEnabled = false;
+        ctx.mozImageSmoothingEnabled = false;
+        ctx.msImageSmoothingEnabled = false;
     }
     
     // Set up resize handler
