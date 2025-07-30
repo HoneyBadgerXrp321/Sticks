@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Ending - Walking the Lore Path</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            font-family: 'Press Start 2P', cursive;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        h1 {
+            font-size: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        #gameCanvas {
+            border: 3px solid #ffffff;
+            background: #87CEEB;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+        
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        button {
+            background: #8B4513;
+            color: white;
+            border: 2px solid #654321;
+            padding: 10px 20px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            cursor: pointer;
+            border-radius: 0;
+        }
+        
+        button:hover {
+            background: #A0522D;
+        }
+        
+        button:active {
+            background: #654321;
+        }
+        
+        .info {
+            margin-top: 20px;
+            font-size: 8px;
+            text-align: center;
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🏰 Test Ending Sequence 🏰</h1>
+    
+    <canvas id="gameCanvas" width="800" height="480"></canvas>
+    
+    <div class="controls">
+        <button onclick="startEndingSequence()">🏰 Start Ending</button>
+        <button onclick="resetTest()">🔄 Reset</button>
+        <button onclick="toggleAnimation()">⏯️ Toggle Animation</button>
+    </div>
+    
+    <div class="info">
+        <p>This tests the ending sequence where the character walks up to the castle.</p>
+        <p>Click "Start Ending" to see the final victory animation!</p>
+    </div>
+
+    <script>
+        class EndingTester {
+            constructor() {
+                this.canvas = document.getElementById('gameCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.assets = {};
+                this.characterX = 50;
+                this.characterY = 260;
+                this.animationFrame = 0;
+                this.walkingSpeed = 2;
+                this.isWalking = false;
+                this.animationRunning = false;
+                
+                this.loadAssets();
+            }
+
+            async loadAssets() {
+                try {
+                    await this.loadImage('assets/ui/end.png', 'castle');
+                    
+                    for (let i = 1; i <= 5; i++) {
+                        await this.loadImage(`assets/characters/${i}.png`, `character_${i}`);
+                    }
+                    
+                    console.log('All ending assets loaded!');
+                    this.draw();
+                } catch (error) {
+                    console.error('Error loading assets:', error);
+                    this.drawFallback();
+                }
+            }
+
+            loadImage(src, name) {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        this.assets[name] = img;
+                        console.log(`Loaded: ${name}`);
+                        resolve(img);
+                    };
+                    img.onerror = () => {
+                        console.error(`Failed to load: ${src}`);
+                        const canvas = document.createElement('canvas');
+                        canvas.width = 64;
+                        canvas.height = 64;
+                        const ctx = canvas.getContext('2d');
+                        ctx.fillStyle = '#ff00ff';
+                        ctx.fillRect(0, 0, 64, 64);
+                        ctx.fillStyle = '#000';
+                        ctx.font = '8px Arial';
+                        ctx.fillText('MISSING', 10, 32);
+                        this.assets[name] = canvas;
+                        resolve(canvas);
+                    };
+                    img.src = src;
+                });
+            }
+
+            draw() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                if (this.assets.castle) {
+                    this.ctx.drawImage(
+                        this.assets.castle,
+                        0, 0, this.assets.castle.width, this.assets.castle.height,
+                        0, 0, this.canvas.width, this.canvas.height
+                    );
+                } else {
+                    this.ctx.fillStyle = '#87CEEB';
+                    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                    
+                    this.ctx.fillStyle = '#8B4513';
+                    this.ctx.fillRect(600, 200, 150, 200);
+                    this.ctx.fillStyle = '#654321';
+                    this.ctx.fillRect(650, 150, 50, 50);
+                    
+                    this.ctx.fillStyle = '#000';
+                    this.ctx.font = '12px "Press Start 2P"';
+                    this.ctx.fillText('CASTLE', 620, 300);
+                }
+                
+                this.drawCharacter();
+                
+                if (this.characterX >= 420) {
+                    this.drawVictoryMessage();
+                }
+            }
+
+            drawCharacter() {
+                if (this.characterX >= 420) {
+                    return;
+                }
+                
+                let characterSprite;
+                
+                if (this.isWalking) {
+                    const frameIndex = Math.floor(this.animationFrame / 10) % 5 + 1;
+                    characterSprite = this.assets[`character_${frameIndex}`];
+                } else {
+                    characterSprite = this.assets['character_1'];
+                }
+                
+                if (characterSprite) {
+                    this.ctx.drawImage(
+                        characterSprite,
+                        this.characterX,
+                        this.characterY,
+                        48, 48
+                    );
+                } else {
+                    this.ctx.fillStyle = '#8B4513';
+                    this.ctx.fillRect(this.characterX, this.characterY, 32, 32);
+                    this.ctx.fillStyle = '#000';
+                    this.ctx.font = '8px Arial';
+                    this.ctx.fillText('HERO', this.characterX + 2, this.characterY + 20);
+                }
+            }
+
+            drawVictoryMessage() {
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                this.ctx.fillStyle = '#FFD700';
+                this.ctx.font = '24px "Press Start 2P"';
+                this.ctx.textAlign = 'center';
+                this.ctx.fillText('CONGRATULATIONS!', this.canvas.width / 2, 150);
+                
+                this.ctx.font = '16px "Press Start 2P"';
+                this.ctx.fillText('You have completed', this.canvas.width / 2, 200);
+                this.ctx.fillText('Walking the Lore Path!', this.canvas.width / 2, 230);
+                
+                this.ctx.font = '12px "Press Start 2P"';
+                this.ctx.fillStyle = '#FFFFFF';
+                this.ctx.fillText('The badger has reached the castle', this.canvas.width / 2, 280);
+                this.ctx.fillText('and mastered all knowledge!', this.canvas.width / 2, 310);
+                
+                this.ctx.textAlign = 'left';
+            }
+
+            drawFallback() {
+                this.ctx.fillStyle = '#87CEEB';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                this.ctx.fillStyle = '#000';
+                this.ctx.font = '16px "Press Start 2P"';
+                this.ctx.textAlign = 'center';
+                this.ctx.fillText('Ending Test Page', this.canvas.width / 2, 200);
+                this.ctx.fillText('Loading assets...', this.canvas.width / 2, 250);
+                this.ctx.textAlign = 'left';
+            }
+
+            startEndingSequence() {
+                this.characterX = 50;
+                this.characterY = 260;
+                this.isWalking = true;
+                this.animationRunning = true;
+                console.log('Starting ending sequence...');
+                this.animate();
+            }
+
+            animate() {
+                if (!this.animationRunning) return;
+                
+                if (this.characterX < 450) {
+                    this.characterX += this.walkingSpeed;
+                    this.animationFrame++;
+                } else {
+                    this.isWalking = false;
+                }
+                
+                this.draw();
+                
+                if (this.animationRunning) {
+                    requestAnimationFrame(() => this.animate());
+                }
+            }
+
+            reset() {
+                this.characterX = 50;
+                this.characterY = 260;
+                this.animationFrame = 0;
+                this.isWalking = false;
+                this.animationRunning = false;
+                this.draw();
+            }
+
+            toggleAnimation() {
+                this.animationRunning = !this.animationRunning;
+                if (this.animationRunning) {
+                    this.animate();
+                }
+            }
+        }
+
+        let endingTester;
+        
+        window.onload = function() {
+            endingTester = new EndingTester();
+        };
+
+        function startEndingSequence() {
+            endingTester.startEndingSequence();
+        }
+
+        function resetTest() {
+            endingTester.reset();
+        }
+
+        function toggleAnimation() {
+            endingTester.toggleAnimation();
+        }
+    </script>
+</body>
+</html>

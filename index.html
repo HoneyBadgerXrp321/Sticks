@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Walking the Lore Path: A Badgers Trivia</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Start Screen -->
+    <div id="startScreen" class="start-screen">
+        <div class="start-background">
+            <div class="title-logo-start">
+                <img src="assets/ui/Title.png" alt="Walking the Lore Path: A Badgers Trivia">
+            </div>
+            <button id="startButton" class="pixel-button start-button">START GAME</button>
+        </div>
+    </div>
+
+    <!-- Main Game -->
+    <div id="gameContainer" class="game-container hidden">
+        <div class="game-layout">
+            <!-- Controls Bar - Above Game Canvas -->
+            <div class="controls-bar">
+                <button id="runButton" class="pixel-button run-button">START</button>
+                <button id="musicButton" class="pixel-button music-button">♪ OFF</button>
+                <div class="game-stats">
+                    <div class="timer-display">
+                        <span>Time: <span id="questionTimer">12.3</span>s</span>
+                    </div>
+                    <div class="question-counter">
+                        <span>Question: <span id="questionCount">1</span>/40</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Game Canvas and Question Area -->
+            <div class="game-canvas-area">
+                <!-- Main Game Canvas -->
+                <div class="game-window">
+                    <canvas id="gameCanvas" width="800" height="480"></canvas>
+                </div>
+                
+                <!-- Question Interface - Below Game Canvas -->
+                <div id="questionInterface" class="question-interface hidden">
+                    <div class="question-bar">
+                        <div id="questionText" class="question-text"></div>
+                    </div>
+                    <div class="answer-buttons">
+                        <button id="answer1" class="answer-button pixel-button"></button>
+                        <button id="answer2" class="answer-button pixel-button"></button>
+                        <button id="answer3" class="answer-button pixel-button"></button>
+                        <button id="answer4" class="answer-button pixel-button"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        
+        <!-- Game Over Screen -->
+        <div id="gameOverScreen" class="game-over hidden">
+            <h2>Game Complete!</h2>
+            <p id="finalScore"></p>
+            <button id="restartButton" class="pixel-button">Play Again</button>
+        </div>
+    </div>
+    
+    <script src="js/assetLoader.js"></script>
+    <script src="js/musicManager.js"></script>
+    <script src="js/gameEngine.js"></script>
+    <script src="js/animationManager.js"></script>
+    <script src="js/scrollManager.js"></script>
+    <script src="js/questionManager.js"></script>
+    <script src="js/endingSequence.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
