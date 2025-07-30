@@ -92,14 +92,15 @@ body {
 
 .game-container {
     width: 100vw;
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     background: #000;
-    padding: 10px;
+    padding: 5px;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 .game-container.hidden {
@@ -135,13 +136,14 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px;
+    gap: 8px;
     width: 100%;
-    max-width: min(90vw, 1000px);
-    justify-content: flex-start;
-    padding: 0 10px;
+    max-width: min(90vw, 900px);
+    justify-content: center;
+    padding: 0 5px;
     position: relative;
-    transform-origin: top center;
+    transform-origin: center center;
+    height: 100%;
 }
 
 /* Controls Bar - Horizontal layout above canvas */
@@ -154,14 +156,14 @@ body {
     background: #1a1a2e;
     border: 3px solid #fff;
     border-radius: 8px;
-    padding: 12px 20px;
+    padding: 8px 15px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     box-sizing: border-box;
 }
 
 .run-button {
-    font-size: 16px;
-    padding: 12px 24px;
+    font-size: 14px;
+    padding: 8px 16px;
     background: #228B22;
     border: 3px solid #fff;
     color: #fff;
@@ -177,8 +179,8 @@ body {
 }
 
 .music-button {
-    font-size: 16px;
-    padding: 12px 20px;
+    font-size: 14px;
+    padding: 8px 16px;
     background: #4169E1;
     border: 3px solid #fff;
     color: #fff;
@@ -205,21 +207,21 @@ body {
 
 .game-stats {
     display: flex;
-    gap: 30px;
+    gap: 20px;
     align-items: center;
 }
 
 .timer-display {
     font-family: 'Courier New', monospace;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
     color: #fff;
     text-shadow: 2px 2px 0px #000;
     border: 2px solid #fff;
-    padding: 8px 12px;
+    padding: 6px 10px;
     border-radius: 4px;
     background: rgba(0, 0, 0, 0.5);
-    min-width: 120px;
+    min-width: 100px;
     text-align: center;
 }
 
@@ -230,10 +232,10 @@ body {
 .lives-display, .question-counter {
     background: #2a2a4e;
     border: 2px solid #4a4a6e;
-    padding: 8px 16px;
+    padding: 6px 12px;
     border-radius: 6px;
     color: #fff;
-    font-size: 12px;
+    font-size: 11px;
     text-shadow: 1px 1px 0px #000;
 }
 
@@ -281,7 +283,7 @@ body {
     width: min(90vw, 800px);
     max-width: 800px;
     z-index: 100;
-    margin-top: 15px;
+    margin-top: 8px;
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -434,37 +436,42 @@ body {
 }
 
 /* Responsive scaling for when content doesn't fit */
+@media screen and (max-height: 900px) {
+    .game-layout {
+        transform: scale(0.9);
+        transform-origin: center center;
+    }
+}
+
 @media screen and (max-height: 800px), screen and (max-width: 900px) {
     .game-layout {
-        transform: scale(0.85);
-        transform-origin: top center;
-        margin-top: -20px;
+        transform: scale(0.8);
+        transform-origin: center center;
     }
     
     .controls-bar {
-        padding: 10px 15px;
+        padding: 6px 12px;
     }
     
     .run-button, .music-button {
-        font-size: 14px;
-        padding: 10px 18px;
+        font-size: 12px;
+        padding: 6px 12px;
     }
     
     .game-stats {
-        gap: 20px;
+        gap: 15px;
     }
     
     .timer-display, .lives-display, .question-counter {
-        font-size: 11px;
-        padding: 6px 10px;
+        font-size: 10px;
+        padding: 4px 8px;
     }
 }
 
 @media screen and (max-height: 700px), screen and (max-width: 800px) {
     .game-layout {
-        transform: scale(0.75);
-        transform-origin: top center;
-        margin-top: -40px;
+        transform: scale(0.7);
+        transform-origin: center center;
     }
     
     body {
@@ -472,35 +479,34 @@ body {
     }
     
     .run-button, .music-button {
-        font-size: 12px;
-        padding: 8px 15px;
+        font-size: 11px;
+        padding: 5px 10px;
     }
     
     .timer-display, .lives-display, .question-counter {
-        font-size: 10px;
-        padding: 5px 8px;
+        font-size: 9px;
+        padding: 3px 6px;
     }
     
     .question-text {
-        font-size: 11px;
+        font-size: 10px;
     }
     
     .answer-button {
-        font-size: 12px;
-        min-height: 40px;
-        padding: 8px;
+        font-size: 11px;
+        min-height: 35px;
+        padding: 6px;
     }
 }
 
 @media screen and (max-height: 600px) {
     .game-layout {
-        transform: scale(0.65);
-        transform-origin: top center;
-        margin-top: -60px;
+        transform: scale(0.6);
+        transform-origin: center center;
     }
     
     .game-container {
-        padding: 5px;
+        padding: 2px;
     }
 }
 
