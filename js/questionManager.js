@@ -10,6 +10,7 @@ class QuestionManager {
         this.targetText = '';
         this.typingInterval = null;
         this.timeExpired = false; // Track if timer has expired for current question
+        this.currentShuffledAnswers = null; // Store shuffled answers for current question
         
         this.generateSampleQuestions();
     }
@@ -282,7 +283,20 @@ class QuestionManager {
         // Start typing animation for question text
         this.startTypingAnimation(question.question);
 
-        // Set up answer buttons
+        // Create randomized answer array with original indices
+        const answersWithIndices = question.answers.map((answer, index) => ({
+            text: answer,
+            originalIndex: index,
+            isCorrect: index === question.correct
+        }));
+
+        // Shuffle the answers
+        const shuffledAnswers = this.shuffleArray(answersWithIndices);
+
+        // Store the shuffled answers for validation later
+        this.currentShuffledAnswers = shuffledAnswers;
+
+        // Set up answer buttons with shuffled answers
         const answerButtons = [
             document.getElementById('answer1'),
             document.getElementById('answer2'),
@@ -291,7 +305,7 @@ class QuestionManager {
         ];
 
         answerButtons.forEach((button, index) => {
-            button.textContent = question.answers[index];
+            button.textContent = shuffledAnswers[index].text;
             button.classList.remove('correct', 'incorrect');
             button.disabled = false;
             
@@ -337,7 +351,7 @@ class QuestionManager {
         if (this.isTyping || this.timeExpired) return; // Don't allow selection while typing or if time expired
 
         const question = this.getCurrentQuestion();
-        if (!question) return;
+        if (!question || !this.currentShuffledAnswers) return;
 
         const answerButtons = [
             document.getElementById('answer1'),
@@ -349,17 +363,17 @@ class QuestionManager {
         // Disable all buttons
         answerButtons.forEach(button => button.disabled = true);
 
-        // Show correct/incorrect feedback
+        // Show correct/incorrect feedback based on shuffled positions
         answerButtons.forEach((button, index) => {
-            if (index === question.correct) {
+            if (this.currentShuffledAnswers[index].isCorrect) {
                 button.classList.add('correct');
-            } else if (index === selectedIndex && index !== question.correct) {
+            } else if (index === selectedIndex && !this.currentShuffledAnswers[index].isCorrect) {
                 button.classList.add('incorrect');
             }
         });
 
-        // Check if answer is correct
-        const isCorrect = selectedIndex === question.correct;
+        // Check if the selected answer is correct
+        const isCorrect = this.currentShuffledAnswers[selectedIndex].isCorrect;
         
         // Notify game engine of the result
         setTimeout(() => {
